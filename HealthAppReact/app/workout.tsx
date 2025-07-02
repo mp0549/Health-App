@@ -4,10 +4,10 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  FlatList,
   SafeAreaView,
   StyleSheet,
   ScrollView,
+  Alert,
 } from 'react-native';
 
 type SetData = {
@@ -65,6 +65,28 @@ export default function WorkoutScreen() {
     setExercises(updated);
   };
 
+  // Check if all exercises are saved
+  const allSaved = exercises.length > 0 && exercises.every((ex) => ex.isSaved);
+
+  // Handler for End Workout button
+  const handleEndWorkout = () => {
+    Alert.alert(
+      'End Workout',
+      'Are you sure you want to end the workout?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Yes, End Workout',
+          onPress: () => {
+            // Handle ending workout here (e.g., reset state, navigate)
+            Alert.alert('Workout ended', 'Good job!');
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -109,38 +131,36 @@ export default function WorkoutScreen() {
                     Set {setIndex + 1}: {set.weight} lbs x {set.reps} reps
                   </Text>
                 ) : (
-                <View key={setIndex} style={styles.setRow}>
+                  <View key={setIndex} style={styles.setRow}>
                     <TextInput
-                        placeholder="Weight"
-                        keyboardType="numeric"
-                        value={set.weight}
-                        onChangeText={(val) =>
+                      placeholder="Weight"
+                      keyboardType="numeric"
+                      value={set.weight}
+                      onChangeText={(val) =>
                         updateSetField(
-                            exerciseIndex,
-                            setIndex,
-                            'weight',
-                            val.replace(/[^0-9.]/g, '')
+                          exerciseIndex,
+                          setIndex,
+                          'weight',
+                          val.replace(/[^0-9.]/g, '')
                         )
-                        }
-                        style={styles.smallInput}
+                      }
+                      style={styles.smallInput}
                     />
                     <TextInput
-                        placeholder="Reps"
-                        keyboardType="numeric"
-                        value={set.reps}
-                        onChangeText={(val) =>
+                      placeholder="Reps"
+                      keyboardType="numeric"
+                      value={set.reps}
+                      onChangeText={(val) =>
                         updateSetField(
-                            exerciseIndex,
-                            setIndex,
-                            'reps',
-                            val.replace(/[^0-9]/g, '')
+                          exerciseIndex,
+                          setIndex,
+                          'reps',
+                          val.replace(/[^0-9]/g, '')
                         )
-                        }
-                        style={styles.smallInput}
+                      }
+                      style={styles.smallInput}
                     />
-                </View>
-
-
+                  </View>
                 )
               )}
 
@@ -171,6 +191,26 @@ export default function WorkoutScreen() {
             </View>
           ))}
         </View>
+
+        {/* Save status message */}
+        <Text
+          style={[
+            styles.saveStatus,
+            { color: allSaved ? 'green' : 'red' },
+          ]}
+        >
+          {allSaved
+            ? 'All exercises have been saved.'
+            : 'Some exercises have not been saved yet.'}
+        </Text>
+
+        {/* End Workout button */}
+        <TouchableOpacity
+          onPress={handleEndWorkout}
+          style={[styles.button, { marginTop: 20, backgroundColor: '#dc3545' }]}
+        >
+          <Text style={styles.buttonText}>End Workout</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -194,6 +234,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonText: { color: 'white', fontWeight: 'bold' },
   exerciseCard: {
@@ -224,4 +265,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   saveText: { color: 'white', fontWeight: 'bold' },
+  saveStatus: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginTop: 20,
+    textAlign: 'center',
+  },
 });
