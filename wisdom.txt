@@ -1,0 +1,62 @@
+cd       # takes you to your home directory
+ls -l    # long form list
+ll       # is al alias of ls -l probably
+alias ll # will tell you what it is
+alias    # lists your current aliases
+
+# you CAN absolutely add new aliases for yourself
+
+# In bash (Bourne Again Shell) ~ means two different things
+1. ~/ means your home directory
+2. ~x means home directory of user x
+--> that means ~om/.bashrc means .bashrc file in the home directory of om
+
+Most of time, home directory of a user is /home/username
+I say most of time, because it is configurable.
+
+Let's add a few new aliases to your list. We will edit ~/.bashrc file to do that.
+I'll explain later why we edit that file.
+
+# Add these two lines to the bottom of ~/.bashrc
+
+alias glog='git log --all --graph --pretty=format:'\''%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'\'' --abbrev-commit --date=relative'
+alias gs='git status -s'
+
+# Rudimentary vi survival tips
+
+vi a.txt # start editing a.txt
+# vi as three modes, browse mode, edit mode, and command mode
+# everything happens through the alphabetic keys,
+# for example  HJKL   left down up right
+
+Display line numbers on the left
+:set number,  :set nu, :set nonu
+This is a command mode thing, starts with colon
+
+edit mode is when you wand to add or delete text
+they are all mostly single keystrokes while in browse mode
+
+once you are in edit mode, hit esc to get back to browse mode
+
+o # add a line below
+O # above
+
+G # go to the bottom of the file
+o # trying to add new lines
+
+alias glog='git log --all --graph --pretty=format:'\''%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'\'' --abbrev-commit --date=relative'
+alias gs='git status -s'
+
+esc # to get back to browse mode
+
+We need to write the file to disc, which is a command
+:w
+
+We need to exit out of vi. A command
+:q
+
+
+
+
+
+

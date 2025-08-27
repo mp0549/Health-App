@@ -15,8 +15,7 @@ import {
   sendWorkout,
   sendExercise,
   sendSet,
-} from '../src/api/workoutApi';
-
+} from '../api/workoutApi';
 
 type SetData = {
   reps?: string;
@@ -73,57 +72,55 @@ export default function WorkoutScreen() {
     setExercises(updated);
   };
 
-  // Check if all exercises are saved
   const allSaved = exercises.length > 0 && exercises.every((ex) => ex.isSaved);
 
-  // Handler for End Workout button
   const handleEndWorkout = async () => {
-  if (!allSaved) {
-    Alert.alert("Not all exercises are saved", "Please save all exercises before ending the workout.");
-    return;
-  }
+    if (!allSaved) {
+      Alert.alert(
+        'Not all exercises are saved',
+        'Please save all exercises before ending the workout.'
+      );
+      return;
+    }
 
-  Alert.alert(
-    'End Workout',
-    'Are you sure you want to end the workout?',
-    [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Yes, End Workout',
-        onPress: async () => {
-          try {
-            const sessionId = await sendSession(date);
-            const workoutId = await sendWorkout(sessionId, workoutName);
+    Alert.alert(
+      'End Workout',
+      'Are you sure you want to end the workout?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Yes, End Workout',
+          onPress: async () => {
+            try {
+              const sessionId = await sendSession(date);
+              const workoutId = await sendWorkout(sessionId, workoutName);
 
-            for (const exercise of exercises) {
-              const exerciseId = await sendExercise(workoutId, exercise.name);
-
-              for (const set of exercise.sets) {
-                await sendSet(
-                  exerciseId,
-                  set.reps || undefined,
-                  set.weight || undefined,
-                  undefined // you can add duration_sec if needed
-                );
+              for (const exercise of exercises) {
+                const exerciseId = await sendExercise(workoutId, exercise.name);
+                for (const set of exercise.sets) {
+                  await sendSet(
+                    exerciseId,
+                    set.reps || undefined,
+                    set.weight || undefined,
+                    undefined
+                  );
+                }
               }
+
+              Alert.alert('Workout saved!', 'Great job today 💪');
+              setDate('');
+              setWorkoutName('');
+              setExercises([]);
+            } catch (error) {
+              console.error('Failed to send workout data:', error);
+              Alert.alert('Error', 'Something went wrong while saving your workout.');
             }
-
-            Alert.alert('Workout saved!', 'Great job today 💪');
-            // Optional: clear state
-            setDate('');
-            setWorkoutName('');
-            setExercises([]);
-          } catch (error) {
-            console.error('Failed to send workout data:', error);
-            Alert.alert('Error', 'Something went wrong while saving your workout.');
-          }
+          },
         },
-      },
-    ],
-    { cancelable: true }
-  );
-};
-
+      ],
+      { cancelable: true }
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -230,7 +227,6 @@ export default function WorkoutScreen() {
           ))}
         </View>
 
-        {/* Save status message */}
         <Text
           style={[
             styles.saveStatus,
@@ -242,7 +238,6 @@ export default function WorkoutScreen() {
             : 'Some exercises have not been saved yet.'}
         </Text>
 
-        {/* End Workout button */}
         <TouchableOpacity
           onPress={handleEndWorkout}
           style={[styles.button, { marginTop: 20, backgroundColor: '#dc3545' }]}
